@@ -58,7 +58,7 @@ def main():
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file).convert("RGB")
-        st.image(image, caption="Imagem enviada", use_column_width=True, size=(300, 300))
+        st.image(image, caption="Imagem enviada", use_column_width=True)
 
         if st.button("Classificar"):
             probs = predict_image(model, class_names, image)
@@ -69,6 +69,8 @@ def main():
             st.write("Probabilidades:")
             for cls, p in zip(class_names, probs):
                 st.write(f"- {cls}: {p:.2f}")
+
+            st.info("Os resultados dependem da qualidade do dataset utilizado no treinamento.")
 
 if __name__ == "__main__":
     main()
