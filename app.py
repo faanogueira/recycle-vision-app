@@ -16,7 +16,7 @@ def load_model():
         return None, None
 
     checkpoint = torch.load(MODEL_PATH, map_location=DEVICE)
-    class_names = checkpoint.get("class_names", ["papel", "plastico", "vidro", "metal"])
+    class_names = checkpoint.get("Classes", ["papel", "plastico", "vidro", "metal"])
 
     model = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
     for param in model.parameters():
@@ -47,7 +47,7 @@ def predict_image(model, class_names, image: Image.Image):
     return probs
 
 def main():
-    st.title("Classificador de Resíduos Recicláveis")
+    st.title("Classificador de Resíduos Recicláveis com Visão Computacional")
     st.write("Envie uma imagem de um resíduo para identificar o tipo de material.")
 
     model, class_names = load_model()
@@ -58,7 +58,7 @@ def main():
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file).convert("RGB")
-        st.image(image, caption="Imagem enviada", use_column_width=True)
+        st.image(image, caption="Imagem enviada", use_column_width=True, size=(300, 300))
 
         if st.button("Classificar"):
             probs = predict_image(model, class_names, image)
@@ -69,8 +69,6 @@ def main():
             st.write("Probabilidades:")
             for cls, p in zip(class_names, probs):
                 st.write(f"- {cls}: {p:.2f}")
-
-            st.info("Este é um protótipo para demonstração em hackathon. Os resultados dependem da qualidade do dataset utilizado no treinamento.")
 
 if __name__ == "__main__":
     main()
