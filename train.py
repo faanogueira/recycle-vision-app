@@ -12,9 +12,9 @@ DATA_DIR = Path("data")
 MODEL_DIR = Path("models")
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
-BATCH_SIZE = 32
-NUM_EPOCHS = 5
-LEARNING_RATE = 1e-3
+BATCH_SIZE = 64
+NUM_EPOCHS = 20
+LEARNING_RATE = 1e-4
 NUM_CLASSES = 4  # papel, plastico, vidro, metal
 
 def get_transforms():
