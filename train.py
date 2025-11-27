@@ -1,21 +1,27 @@
 import os
 from pathlib import Path
 
+import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
-from sklearn.metrics import classification_report, f1_score
+from sklearn.metrics import classification_report, f1_score, confusion_matrix
 
+# Configurações globais
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DATA_DIR = Path("data")
 MODEL_DIR = Path("models")
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
-BATCH_SIZE = 16
-NUM_EPOCHS = 5
-LEARNING_RATE = 1e-2
-NUM_CLASSES = 4  # papel, plastico, vidro, metal
+BATCH_SIZE = 32
+NUM_EPOCHS = 5          # pode ajustar para mais se tiver tempo
+LEARNING_RATE = 1e-3     # mais estável para fine-tuning
+NUM_CLASSES = 4          # papel, plastico, vidro, metal
+
+cm = confusion_matrix(best_y_true, best_y_pred)
+print("Matriz de confusão:")
+print(cm)
 
 def get_transforms():
     train_tfms = transforms.Compose([
@@ -37,6 +43,7 @@ def get_transforms():
 
     return train_tfms, valid_tfms
 
+
 def get_dataloaders():
     train_tfms, valid_tfms = get_transforms()
 
@@ -44,8 +51,10 @@ def get_dataloaders():
     valid_path = DATA_DIR / "valid"
 
     if not train_path.exists() or not valid_path.exists():
-        raise FileNotFoundError("Pastas data/train e data/valid não encontradas. "
-                                "Organize o dataset antes de treinar.")
+        raise FileNotFoundError(
+            "Pastas data/train e data/valid não encontradas. "
+            "Organize o dataset (ex: usando split_dataset.py) antes de treinar."
+        )
 
     train_ds = datasets.ImageFolder(train_path, transform=train_tfms)
     valid_ds = datasets.ImageFolder(valid_path, transform=valid_tfms)
@@ -55,15 +64,20 @@ def get_dataloaders():
 
     return train_loader, valid_loader, train_ds.classes
 
+
 def build_model(num_classes: int):
+    # carrega ResNet18 pré treinada
     model = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
-    # Congela todos os parâmetros
+
+    # congela pesos do backbone
     for param in model.parameters():
         param.requires_grad = False
 
+    # substitui a camada final
     in_features = model.fc.in_features
     model.fc = nn.Linear(in_features, num_classes)
     return model
+
 
 def train_one_epoch(model, loader, criterion, optimizer):
     model.train()
@@ -82,6 +96,7 @@ def train_one_epoch(model, loader, criterion, optimizer):
 
     epoch_loss = running_loss / len(loader.dataset)
     return epoch_loss
+
 
 def evaluate(model, loader, criterion):
     model.eval()
@@ -106,6 +121,7 @@ def evaluate(model, loader, criterion):
 
     return epoch_loss, macro_f1, all_labels, all_preds
 
+
 def main():
     print(f"Usando dispositivo: {DEVICE}")
 
@@ -120,6 +136,8 @@ def main():
 
     best_f1 = 0.0
     best_state = None
+    best_y_true = None
+    best_y_pred = None
 
     for epoch in range(1, NUM_EPOCHS + 1):
         train_loss = train_one_epoch(model, train_loader, criterion, optimizer)
@@ -135,17 +153,20 @@ def main():
                 "model_state_dict": model.state_dict(),
                 "class_names": class_names,
             }
+            best_y_true = y_true
+            best_y_pred = y_pred
 
     if best_state is not None:
         model_path = MODEL_DIR / "model.pth"
         torch.save(best_state, model_path)
-        print(f"Melhor modelo salvo em: {model_path}")
+        print(f"\nMelhor modelo salvo em: {model_path}")
         print(f"Melhor F1 macro: {best_f1:.4f}")
 
         print("\nRelatório de classificação (melhor época):")
-        print(classification_report(y_true, y_pred, target_names=class_names))
+        print(classification_report(best_y_true, best_y_pred, target_names=class_names))
     else:
         print("Nenhum modelo foi salvo. Verifique se o treinamento ocorreu corretamente.")
+
 
 if __name__ == "__main__":
     main()
