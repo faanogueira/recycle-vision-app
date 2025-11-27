@@ -129,4 +129,3 @@ streamlit run app.py
 </p>
 <!-- Fim da seção "Contato" -->
 <br>
-
