@@ -30,19 +30,14 @@ As classes finais:
 - `vidro`
 - `metal`
 
-### 📦 A estrutura de pastas esperada é:
+### 📦 A estrutura dos dados:
 
-data/
-  train/
-    papel/ (210 imagens)
-    plastico/ (133 imagens)
-    vidro/ (403 imagens)
-    metal/ (154 imagens)
-  valid/
-    papel/ (50 imagens)
-    plastico/ (30 imagens)
-    vidro/ (100 imagens)
-    metal/ (40 imagens)
+| Classe      | Treino | Validação | Total |
+|-------------|--------|-----------|-------|
+| **Papel**   | 210    | 50        | 260   |
+| **Plástico**| 133    | 30        | 163   |
+| **Vidro**   | 403    | 100       | 503   |
+| **Metal**   | 154    | 40        | 194   |
 
 ---
 
@@ -134,3 +129,4 @@ streamlit run app.py
 </p>
 <!-- Fim da seção "Contato" -->
 <br>
+
