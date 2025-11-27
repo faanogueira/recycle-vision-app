@@ -52,22 +52,38 @@ As classes finais:
 
 ## 🧪 Resultados
 
-### 🔍 Melhor modelo (época 1 de 5)
+### 🔍 Visão geral do melhor modelo
 
-- **Loss de validação:** 0.4128  
-- **F1 macro:** 0.8419  
-- **Acurácia:** 86%  
-- **Tempo de inferência:** ~0.3s em CPU  
-- **Modelo salvo em:** `models/model.pth`
+- **Épocas de treino:** 5  
+- **Loss de validação (melhor época):** 0.3867  
+- **F1 macro (melhor época):** 0.8393  
+- **Acurácia de validação:** 86%  
+- **Tempo médio de inferência:** ~0.3s em CPU  
+- **Modelo salvo em:** `models/model.pth`  
+- **Classes treinadas:** `['metal', 'papel', 'plastico', 'vidro']`
 
-### 📋 Relatório de Classificação
+O modelo foi treinado com transferência de aprendizado usando ResNet18 e avaliado em um conjunto de validação com 900 imagens.
 
-| Classe     | Precisão | Recall | F1-score | Suporte |
+---
+
+### 📋 Relatório de Classificação (Validação)
+
+| Classe      | Precisão | Recall | F1-score | Suporte |
 |------------|----------|--------|----------|---------|
-| **Metal**  | 0.83     | 0.72   | 0.77     | 154     |
-| **Papel**  | 0.92     | 0.93   | 0.92     | 210     |
-| **Plástico**| 0.94     | 0.58   | 0.72     | 133     |
-| **Vidro**  | 0.82     | 0.96   | 0.88     | 403     |
+| **Metal**  | 0.75     | 0.85   | 0.80     | 154     |
+| **Papel**  | 0.95     | 0.88   | 0.91     | 210     |
+| **Plástico** | 0.87   | 0.65   | 0.75     | 133     |
+| **Vidro**  | 0.87     | 0.93   | 0.90     | 403     |
+| **Média macro** | –   | –      | **0.84** | 900     |
+
+### Principais insights
+
+- O modelo apresenta **bom equilíbrio entre as classes**, com F1 macro em torno de 0.84.  
+- **Papel e vidro** são as classes com melhor desempenho, com F1 perto de 0.90.  
+- **Metal** tem F1 de 0.80, com bom recall (recupera a maior parte dos metais) e alguma perda de precisão.  
+- **Plástico** é a classe mais desafiadora, com recall menor, indicando que parte dos plásticos ainda é confundida com outras classes.  
+
+Esses resultados são adequados para um protótipo de hackathon e indicam espaço claro para evolução com mais dados e ajustes específicos para a classe “plástico”.
 
 ---
 
@@ -115,7 +131,6 @@ streamlit run app.py
 
 ---
 
-<br>
 <!-- Início da seção "Contato" -->
 <h2>🌐 Contate-me: </h2>
 <div>
@@ -128,4 +143,3 @@ streamlit run app.py
 <a href="mailto:faanogueira@gmail.com"><img style="padding-right: 10px;" src="https://img.icons8.com/?size=100&id=P7UIlhbpWzZm&format=png&color=000000" target="_blank" width="80"></a> 
 </p>
 <!-- Fim da seção "Contato" -->
-<br>
