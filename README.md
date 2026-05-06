@@ -1,5 +1,9 @@
 # ♻️ Classificador de Resíduos Recicláveis com Visão Computacional
 
+<div align="center">
+  <img src="cover.png" width="100%" alt="Capa do Projeto">
+</div>
+
 Este projeto desenvolve um modelo de visão computacional capaz de identificar o tipo de resíduo (papel, plástico, vidro e metal) a partir de uma imagem. A solução foi criada para auxiliar cooperativas de reciclagem a aumentar produtividade e reduzir erros na triagem manual.
 
 ---
